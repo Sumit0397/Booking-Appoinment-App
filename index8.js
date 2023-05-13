@@ -21,26 +21,26 @@ function showUserOnScreen(obj){
     const childelem = document.createElement('li');
     childelem.textContent = obj.name + '-' + obj.email
 
-    const deleteBtn = document.createElement('input');
-    deleteBtn.type = 'button';
-    deleteBtn.value = 'Delete';
-    deleteBtn.onclick = () => {
-        localStorage.removeItem(childelem);
-        parentelem.removeChild(childelem);
-    }
+    // const deleteBtn = document.createElement('input');
+    // deleteBtn.type = 'button';
+    // deleteBtn.value = 'Delete';
+    // deleteBtn.onclick = () => {
+    //     localStorage.removeItem(childelem);
+    //     parentelem.removeChild(childelem);
+    // }
 
-    const editBtn = document.createElement('input');
-    editBtn.type = 'button';
-    editBtn.value = 'Edit';
-    editBtn.onclick = () => {
-        localStorage.removeItem(childelem);
-        parentelem.removeChild(childelem);
-        document.getElementById('name').value = obj.name;
-        document.getElementById('email').value = obj.email;
-    } 
+    // const editBtn = document.createElement('input');
+    // editBtn.type = 'button';
+    // editBtn.value = 'Edit';
+    // editBtn.onclick = () => {
+    //     localStorage.removeItem(childelem);
+    //     parentelem.removeChild(childelem);
+    //     document.getElementById('name').value = obj.name;
+    //     document.getElementById('email').value = obj.email;
+    // } 
 
-    childelem.appendChild(deleteBtn);
-    childelem.appendChild(editBtn);
+    // childelem.appendChild(deleteBtn);
+    // childelem.appendChild(editBtn);
     parentelem.appendChild(childelem);
 }
 window.addEventListener('DOMContentLoaded', () => {
@@ -64,8 +64,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function showListofRegisteredUser(user){
     const parentNode = document.getElementById('item');
-    const createNewUserHtml = `<li id='${user.email}'>${user.name} - ${user.email}
-                                    <button onclick=deleteUser()>Delete</button>
+    const createNewUserHtml = `<li id='${user._id}'>${user.name} - ${user.email}
+                                    <button onclick=deleteUser('${user._id}')>Delete</button>
+                                    <button onclick=editUser('${user._id},${user.name},${user.email}')>Edit</button>
                                 </li>
                                 `
     console.log(createNewUserHtml)
@@ -73,19 +74,26 @@ function showListofRegisteredUser(user){
     console.log(parentNode.innerHTML)
 }
 
-function deleteUser(email) {
-    axios.delete("https://crudcrud.com/api/26474ad38a384ca7a4469543a3649a4b/appointmentData/_id")
-    .then((response) => {
-        console.log(response);
-    })
-    .catch(err => console.log(err));
-    localStorage.removeItem(email)
-    removeItemFromScreen(email)
+function editUser(userId, name, email){
+    document.getElementById('name').value = name;
+    document.getElementById('email').value = email;
+
+    deleteUser(userId);
 }
 
-function removeItemFromScreen(email){
+function deleteUser(userId) {
+    axios.delete(`https://crudcrud.com/api/26474ad38a384ca7a4469543a3649a4b/appointmentData/${userId}`)
+    .then((response) => {
+        removeItemFromScreen(userId);
+    })
+    .catch(err => console.log(err));
+    // localStorage.removeItem(email)
+    // removeItemFromScreen(email)
+}
+
+function removeItemFromScreen(userId){
     const parentNode = document.getElementById('item');
-    const elem = document.getElementById(email)
+    const elem = document.getElementById(userId)
     parentNode.removeChild(elem);
 }
 
